@@ -1,5 +1,8 @@
 # QubitOS Protocol Buffers
 
+[![CI](https://github.com/qubit-os/qubit-os-proto/actions/workflows/ci.yaml/badge.svg)](https://github.com/qubit-os/qubit-os-proto/actions/workflows/ci.yaml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 Protocol Buffer definitions for QubitOS - the open-source quantum control kernel.
 
 ## Overview
