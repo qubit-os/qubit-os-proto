@@ -1,0 +1,176 @@
+// QubitOS Pulse Specification
+// Copyright 2026 QubitOS Contributors
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package quantum.pulse.v1;
+
+import "quantum/common/v1/common.proto";
+
+option java_multiple_files = true;
+option java_package = "io.qubitos.pulse.v1";
+
+// GateType enumerates supported quantum gates.
+enum GateType {
+  GATE_UNSPECIFIED = 0;
+  
+  // Single-qubit gates
+  GATE_X = 1;      // Pauli-X (NOT gate)
+  GATE_Y = 2;      // Pauli-Y
+  GATE_Z = 3;      // Pauli-Z
+  GATE_SX = 4;     // sqrt(X), a.k.a. sqrt(NOT)
+  GATE_H = 5;      // Hadamard
+  GATE_RX = 6;     // Rotation around X-axis
+  GATE_RY = 7;     // Rotation around Y-axis
+  GATE_RZ = 8;     // Rotation around Z-axis (virtual Z, typically no pulse needed)
+  GATE_S = 9;      // S gate (sqrt(Z))
+  GATE_T = 10;     // T gate (fourth root of Z)
+  
+  // Two-qubit gates
+  GATE_CZ = 20;    // Controlled-Z
+  GATE_CNOT = 21;  // Controlled-NOT (CX)
+  GATE_ISWAP = 22; // iSWAP
+  GATE_SQISWAP = 23; // sqrt(iSWAP)
+  GATE_CX = 24;    // Alias for CNOT
+  GATE_SWAP = 25;  // SWAP gate
+  
+  // Custom gate (specify unitary in metadata)
+  GATE_CUSTOM = 99;
+}
+
+// PulseShape defines a complete pulse waveform for quantum gate implementation.
+//
+// The pulse consists of in-phase (I) and quadrature (Q) components,
+// discretized into time steps. For two-qubit gates, an optional coupling
+// envelope may also be specified.
+//
+// Time structure:
+//   - duration_ns: total pulse duration in nanoseconds
+//   - num_time_steps: number of discrete time slices
+//   - time_step_ns: duration of each slice (= duration_ns / num_time_steps)
+//   - i_envelope, q_envelope: amplitude at each time step
+message PulseShape {
+  // Unique identifier for this pulse (UUID format).
+  string pulse_id = 1;
+  
+  // Algorithm used to generate this pulse.
+  // Values: "grape", "drag", "gaussian", "square", "custom"
+  string algorithm = 2;
+  
+  // Target gate type.
+  GateType gate_type = 3;
+  
+  // Indices of qubits this pulse acts on.
+  // Single-qubit gates: [0] or [1]
+  // Two-qubit gates: [0, 1] (control, target for CNOT)
+  repeated int32 target_qubit_indices = 4;
+  
+  // Target fidelity used during optimization.
+  // Range: (0, 1], typically >= 0.99
+  double target_fidelity = 5;
+  
+  // --- Time Structure ---
+  
+  // Total pulse duration in nanoseconds.
+  // Typical range: 10-1000 ns
+  int32 duration_ns = 6;
+  
+  // Number of discrete time steps.
+  // Higher values = finer control but longer optimization.
+  // Typical range: 20-500
+  int32 num_time_steps = 7;
+  
+  // Duration of each time step in nanoseconds.
+  // Computed as: duration_ns / num_time_steps
+  // Included for convenience and validation.
+  double time_step_ns = 8;
+  
+  // --- Waveform Data ---
+  
+  // In-phase (I) component of the pulse envelope.
+  // Length must equal num_time_steps.
+  // Units: MHz (drive amplitude)
+  repeated double i_envelope = 9;
+  
+  // Quadrature (Q) component of the pulse envelope.
+  // Length must equal num_time_steps.
+  // Units: MHz (drive amplitude)
+  repeated double q_envelope = 10;
+  
+  // Maximum amplitude bound in MHz.
+  // All envelope values must satisfy |value| <= max_amplitude_mhz.
+  double max_amplitude_mhz = 11;
+  
+  // Coupling envelope for two-qubit gates (optional).
+  // Used for tunable coupler control or cross-resonance drives.
+  // Length must equal num_time_steps if present.
+  repeated double coupling_envelope = 12;
+  
+  // --- Rotation Gates ---
+  
+  // For rotation gates (RX, RY, RZ): the rotation angle in radians.
+  double rotation_angle = 13;
+  
+  // --- Validation ---
+  
+  // Whether this pulse has been validated.
+  bool validated = 14;
+  
+  // If validation failed, this contains the error message.
+  string validation_error = 15;
+  
+  // --- Provenance ---
+  
+  // Protocol buffer version for this message.
+  int32 proto_version = 16;
+  
+  // When this pulse was created.
+  quantum.common.v1.Timestamp created_at = 17;
+  
+  // Fingerprint of the calibration used during optimization.
+  // Format: "sha256:<16 hex chars>"
+  string calibration_fingerprint = 18;
+  
+  // Version of the code that generated this pulse.
+  // Git SHA or semantic version.
+  string code_version = 19;
+  
+  // Random seed used during optimization.
+  // Enables reproducibility: same seed + code + calibration = identical pulse.
+  int32 random_seed = 20;
+  
+  // --- Custom Gate ---
+  
+  // For GATE_CUSTOM: JSON representation of the target unitary matrix.
+  // Format: {"rows": N, "cols": N, "data": [[re, im], ...]}
+  string custom_unitary_json = 21;
+}
+
+// PulseLibraryEntry represents a named pulse in a library.
+message PulseLibraryEntry {
+  // Human-readable name for this pulse.
+  // Example: "x_gate_20ns_q0"
+  string name = 1;
+  
+  // Optional description.
+  string description = 2;
+  
+  // The pulse shape.
+  PulseShape pulse = 3;
+  
+  // Tags for organization.
+  repeated string tags = 4;
+}
+
+// PulseLibrary is a collection of named pulses.
+message PulseLibrary {
+  // Version of the library format.
+  string version = 1;
+  
+  // When this library was created/updated.
+  quantum.common.v1.Timestamp updated_at = 2;
+  
+  // The pulses in this library.
+  repeated PulseLibraryEntry entries = 3;
+}

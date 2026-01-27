@@ -1,0 +1,98 @@
+# CI workflow for qubit-os-proto
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint Protos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Lint
+        run: buf lint
+      
+      - name: Format check
+        run: buf format -d --exit-code
+
+  breaking:
+    name: Check Breaking Changes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Check for breaking changes
+        run: buf breaking --against 'https://github.com/${{ github.repository }}.git#branch=main'
+
+  generate:
+    name: Generate Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Generate
+        run: buf generate
+      
+      - name: Check generated code is committed
+        run: |
+          if [ -n "$(git status --porcelain generated/)" ]; then
+            echo "Generated code is out of date. Run 'buf generate' and commit the changes."
+            git diff generated/
+            exit 1
+          fi
+
+  test-python:
+    name: Test Python Import
+    runs-on: ubuntu-latest
+    needs: generate
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install grpcio protobuf
+      
+      - name: Test imports
+        run: |
+          cd generated/python
+          python -c "from quantum.common.v1 import common_pb2; print('common_pb2 OK')"
+          python -c "from quantum.pulse.v1 import pulse_pb2; print('pulse_pb2 OK')"
+          python -c "from quantum.backend.v1 import service_pb2; print('service_pb2 OK')"
+
+  test-rust:
+    name: Test Rust Compilation
+    runs-on: ubuntu-latest
+    needs: generate
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dtolnay/rust-toolchain@stable
+      
+      - uses: Swatinem/rust-cache@v2
+      
+      - name: Build Rust crate
+        run: |
+          cd generated/rust
+          cargo build

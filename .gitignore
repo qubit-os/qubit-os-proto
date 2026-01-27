@@ -1,0 +1,16 @@
+# Generated code (keep this since we commit generated code)
+# generated/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Buf
+.buf/
