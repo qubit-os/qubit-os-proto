@@ -12,7 +12,7 @@ import "quantum/backend/v1/hardware.proto";
 option java_multiple_files = true;
 option java_package = "io.qubitos.backend.v1";
 
-// QuantumBackend service provides access to quantum hardware and simulators.
+// QuantumBackendService provides access to quantum hardware and simulators.
 //
 // This is the primary interface for executing pulses and querying backend
 // capabilities. All pulse execution flows through this service.
@@ -20,7 +20,7 @@ option java_package = "io.qubitos.backend.v1";
 // Supported backends:
 // - qutip_simulator: Local QuTiP-based simulator (always available)
 // - iqm_garnet: IQM Garnet quantum processor (requires credentials)
-service QuantumBackend {
+service QuantumBackendService {
   // Execute a single pulse on the specified backend.
   //
   // The pulse is validated before execution. If validation fails,
@@ -29,23 +29,23 @@ service QuantumBackend {
   // For simulators: returns measurement samples from the final state.
   // For hardware: submits to queue and returns when complete.
   rpc ExecutePulse(ExecutePulseRequest) returns (ExecutePulseResponse);
-  
+
   // Execute multiple pulses in a batch.
   //
   // More efficient than individual calls when running many pulses.
   // Can optionally stop on first error or continue despite failures.
   rpc ExecutePulseBatch(ExecutePulseBatchRequest) returns (ExecutePulseBatchResponse);
-  
+
   // Get detailed information about a backend.
   //
   // Returns capabilities, resource limits, connectivity, and current status.
-  rpc GetHardwareInfo(GetHardwareInfoRequest) returns (HardwareInfo);
-  
+  rpc GetHardwareInfo(GetHardwareInfoRequest) returns (GetHardwareInfoResponse);
+
   // Check health of a specific backend or all backends.
   //
   // Use for monitoring and to check availability before submitting jobs.
   rpc Health(HealthRequest) returns (HealthResponse);
-  
+
   // List all available backends.
   rpc ListBackends(ListBackendsRequest) returns (ListBackendsResponse);
 }

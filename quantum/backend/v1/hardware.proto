@@ -21,6 +21,15 @@ message GetHardwareInfoRequest {
   reserved 50 to 100;
 }
 
+// GetHardwareInfoResponse contains backend information.
+message GetHardwareInfoResponse {
+  // The hardware information.
+  HardwareInfo info = 1;
+
+  // Reserved for future use.
+  reserved 50 to 100;
+}
+
 // HardwareInfo describes a quantum backend's capabilities and status.
 message HardwareInfo {
   // Backend identifier.
@@ -175,8 +184,8 @@ message ResourceLimits {
 // OperationalStatus indicates current backend availability.
 message OperationalStatus {
   enum Status {
-    STATUS_UNKNOWN = 0;
-    
+    STATUS_UNSPECIFIED = 0;
+
     // Backend is fully operational.
     STATUS_ONLINE = 1;
     

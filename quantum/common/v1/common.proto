@@ -45,17 +45,19 @@ message Timestamp {
 message Error {
   // Severity level of the error.
   enum Severity {
+    SEVERITY_UNSPECIFIED = 0;
+
     // Informational message, not an actual error.
-    SEVERITY_INFO = 0;
-    
+    SEVERITY_INFO = 1;
+
     // Warning that may indicate a problem but doesn't prevent operation.
-    SEVERITY_WARNING = 1;
-    
+    SEVERITY_WARNING = 2;
+
     // Operation completed but with degraded quality or partial results.
-    SEVERITY_DEGRADED = 2;
-    
+    SEVERITY_DEGRADED = 3;
+
     // Fatal error that prevented the operation from completing.
-    SEVERITY_FATAL = 3;
+    SEVERITY_FATAL = 4;
   }
 
   // gRPC status code (see https://grpc.io/docs/guides/status-codes/).
