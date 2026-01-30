@@ -16,44 +16,44 @@ option java_package = "io.qubitos.backend.v1";
 message ExecutePulseRequest {
   // Trace context for distributed tracing.
   quantum.common.v1.TraceContext trace = 1;
-  
+
   // Name of the backend to use.
   // Values: "qutip_simulator", "iqm_garnet"
   string backend_name = 2;
-  
+
   // The pulse to execute.
   quantum.pulse.v1.PulseShape pulse = 3;
-  
+
   // Number of measurement shots.
   // Each shot gives one bitstring outcome.
   // Typical: 1000-10000
   int32 num_shots = 4;
-  
+
   // Measurement basis.
   // Values: "z" (computational basis), "x", "y"
   // Default: "z"
   string measurement_basis = 5;
-  
+
   // Which qubits to measure.
   // If empty, measures all qubits the pulse acts on.
   repeated int32 measurement_qubits = 6;
-  
+
   // --- Simulator Options ---
-  
+
   // Return the final state vector (simulator only).
   // Useful for debugging but not available on real hardware.
   bool return_state_vector = 7;
-  
+
   // Include calibrated noise model in simulation.
   // If true, uses T1/T2/readout error from calibration.
   bool include_noise = 8;
-  
+
   // --- Request Options ---
-  
+
   // Request timeout in milliseconds.
   // 0 = use backend default.
   int32 timeout_ms = 9;
-  
+
   // Allow execution even if calibration fingerprint doesn't match.
   // If true, executes with WARNING; if false, rejects with FAILED_PRECONDITION.
   bool allow_calibration_mismatch = 10;
@@ -88,70 +88,70 @@ message MeasurementResult {
   // Quality indicator for the result.
   enum Quality {
     QUALITY_UNSPECIFIED = 0;
-    
+
     // All shots completed successfully.
     QUALITY_FULL_SUCCESS = 1;
-    
+
     // Most shots succeeded but some failed.
     // Result is usable but may have slightly higher noise.
     QUALITY_DEGRADED = 2;
-    
+
     // Significant number of shots failed.
     // Result should be interpreted with caution.
     QUALITY_PARTIAL_FAILURE = 3;
-    
+
     // No usable data obtained.
     QUALITY_TOTAL_FAILURE = 4;
   }
-  
+
   // --- Measurement Counts ---
-  
+
   // Bitstring counts from measurement.
   // Key: bitstring (e.g., "00", "01", "10", "11" for 2 qubits)
   // Value: number of times this bitstring was observed
   // Bitstring order: qubit 0 is rightmost (little-endian).
   map<string, int32> bitstring_counts = 1;
-  
+
   // Total number of shots requested.
   int32 total_shots = 2;
-  
+
   // Number of shots that succeeded.
   // May be less than total_shots if some failed.
   int32 successful_shots = 3;
-  
+
   // Quality indicator.
   Quality quality = 4;
-  
+
   // --- Fidelity Estimate ---
-  
+
   // Estimated gate fidelity from this measurement.
   // Only meaningful for certain pulse types and measurement configurations.
   // 0.0 if fidelity estimation is not applicable.
   double fidelity_estimate = 5;
-  
+
   // Method used for fidelity estimation.
   // Values: "direct_comparison", "state_tomography", "not_computed"
   string fidelity_method = 6;
-  
+
   // --- Metadata ---
-  
+
   // Backend that executed this pulse.
   string backend_name = 7;
-  
+
   // When measurement completed.
   quantum.common.v1.Timestamp measured_at = 8;
-  
+
   // Calibration fingerprint used.
   string calibration_fingerprint = 9;
-  
+
   // --- Optional Data ---
-  
+
   // Final state vector (if requested and available).
   StateVector state_vector = 10;
-  
+
   // Noise parameters applied during simulation.
   NoiseParameters noise_applied = 11;
-  
+
   // Execution timing statistics.
   ExecutionTiming timing = 12;
 
@@ -218,10 +218,10 @@ message ExecutionTiming {
 message ExecutePulseBatchRequest {
   // Trace context for the batch.
   quantum.common.v1.TraceContext trace = 1;
-  
+
   // Individual pulse requests.
   repeated ExecutePulseRequest requests = 2;
-  
+
   // Stop batch on first error.
   // If true, subsequent pulses are skipped after a failure.
   // If false, all pulses are attempted regardless of earlier failures.
@@ -235,19 +235,19 @@ message ExecutePulseBatchRequest {
 message ExecutePulseBatchResponse {
   // Trace context echoed back.
   quantum.common.v1.TraceContext trace = 1;
-  
+
   // Individual responses (same order as requests).
   repeated ExecutePulseResponse responses = 2;
-  
+
   // Count of successful executions.
   int32 successful_count = 3;
-  
+
   // Count of failed executions.
   int32 failed_count = 4;
-  
+
   // Count of skipped executions (if stop_on_first_error was true).
   int32 skipped_count = 5;
-  
+
   // Total batch execution time in milliseconds.
   int64 total_time_ms = 6;
 

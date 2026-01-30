@@ -53,95 +53,95 @@ enum GateType {
 message PulseShape {
   // Unique identifier for this pulse (UUID format).
   string pulse_id = 1;
-  
+
   // Algorithm used to generate this pulse.
   // Values: "grape", "drag", "gaussian", "square", "custom"
   string algorithm = 2;
-  
+
   // Target gate type.
   GateType gate_type = 3;
-  
+
   // Indices of qubits this pulse acts on.
   // Single-qubit gates: [0] or [1]
   // Two-qubit gates: [0, 1] (control, target for CNOT)
   repeated int32 target_qubit_indices = 4;
-  
+
   // Target fidelity used during optimization.
   // Range: (0, 1], typically >= 0.99
   double target_fidelity = 5;
-  
+
   // --- Time Structure ---
-  
+
   // Total pulse duration in nanoseconds.
   // Typical range: 10-1000 ns
   int32 duration_ns = 6;
-  
+
   // Number of discrete time steps.
   // Higher values = finer control but longer optimization.
   // Typical range: 20-500
   int32 num_time_steps = 7;
-  
+
   // Duration of each time step in nanoseconds.
   // Computed as: duration_ns / num_time_steps
   // Included for convenience and validation.
   double time_step_ns = 8;
-  
+
   // --- Waveform Data ---
-  
+
   // In-phase (I) component of the pulse envelope.
   // Length must equal num_time_steps.
   // Units: MHz (drive amplitude)
   repeated double i_envelope = 9;
-  
+
   // Quadrature (Q) component of the pulse envelope.
   // Length must equal num_time_steps.
   // Units: MHz (drive amplitude)
   repeated double q_envelope = 10;
-  
+
   // Maximum amplitude bound in MHz.
   // All envelope values must satisfy |value| <= max_amplitude_mhz.
   double max_amplitude_mhz = 11;
-  
+
   // Coupling envelope for two-qubit gates (optional).
   // Used for tunable coupler control or cross-resonance drives.
   // Length must equal num_time_steps if present.
   repeated double coupling_envelope = 12;
-  
+
   // --- Rotation Gates ---
-  
+
   // For rotation gates (RX, RY, RZ): the rotation angle in radians.
   double rotation_angle = 13;
-  
+
   // --- Validation ---
-  
+
   // Whether this pulse has been validated.
   bool validated = 14;
-  
+
   // If validation failed, this contains the error message.
   string validation_error = 15;
-  
+
   // --- Provenance ---
-  
+
   // Protocol buffer version for this message.
   int32 proto_version = 16;
-  
+
   // When this pulse was created.
   quantum.common.v1.Timestamp created_at = 17;
-  
+
   // Fingerprint of the calibration used during optimization.
   // Format: "sha256:<16 hex chars>"
   string calibration_fingerprint = 18;
-  
+
   // Version of the code that generated this pulse.
   // Git SHA or semantic version.
   string code_version = 19;
-  
+
   // Random seed used during optimization.
   // Enables reproducibility: same seed + code + calibration = identical pulse.
   int32 random_seed = 20;
-  
+
   // --- Custom Gate ---
-  
+
   // For GATE_CUSTOM: JSON representation of the target unitary matrix.
   // Format: {"rows": N, "cols": N, "data": [[re, im], ...]}
   string custom_unitary_json = 21;

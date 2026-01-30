@@ -62,19 +62,19 @@ message Error {
 
   // gRPC status code (see https://grpc.io/docs/guides/status-codes/).
   int32 code = 1;
-  
+
   // Severity of the error.
   Severity severity = 2;
-  
+
   // Human-readable error message.
   string message = 3;
-  
+
   // Additional details about the error (may contain structured data).
   string details = 4;
-  
+
   // Trace ID for correlation with logs.
   string trace_id = 5;
-  
+
   // When the error occurred.
   Timestamp timestamp = 6;
 
