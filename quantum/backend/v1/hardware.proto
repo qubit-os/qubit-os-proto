@@ -209,16 +209,16 @@ message OperationalStatus {
 // ValidationStatus indicates cross-backend validation results.
 message ValidationStatus {
   enum Status {
-    VALIDATION_NOT_PERFORMED = 0;
-    
+    STATUS_UNSPECIFIED = 0;
+
     // Backend passed validation.
-    VALIDATION_PASSED = 1;
-    
+    STATUS_PASSED = 1;
+
     // Backend failed validation.
-    VALIDATION_FAILED = 2;
-    
+    STATUS_FAILED = 2;
+
     // Validation results have expired.
-    VALIDATION_EXPIRED = 3;
+    STATUS_EXPIRED = 3;
   }
   
   // Validation status.
@@ -254,14 +254,16 @@ message HealthRequest {
 // HealthResponse contains health check results.
 message HealthResponse {
   enum Status {
+    STATUS_UNSPECIFIED = 0;
+
     // Backend is healthy and accepting requests.
-    HEALTH_HEALTHY = 0;
-    
+    STATUS_HEALTHY = 1;
+
     // Backend is operational but with issues.
-    HEALTH_DEGRADED = 1;
-    
+    STATUS_DEGRADED = 2;
+
     // Backend is not accepting requests.
-    HEALTH_UNAVAILABLE = 2;
+    STATUS_UNAVAILABLE = 3;
   }
   
   // Overall status (worst status if multiple backends checked).
