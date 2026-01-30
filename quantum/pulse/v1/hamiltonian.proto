@@ -23,18 +23,20 @@ option java_package = "io.qubitos.pulse.v1";
 message HamiltonianSpec {
   // Representation format for the Hamiltonian.
   enum RepresentationFormat {
-    // Pauli string representation (default).
+    REPRESENTATION_FORMAT_UNSPECIFIED = 0;
+
+    // Pauli string representation.
     // Format: "coeff*P0*P1*... + coeff*P0*P1*..."
     // where P is I, X, Y, or Z and the number is the qubit index.
     // See docs/specs/pauli-string-grammar.md for full grammar.
-    REPRESENTATION_PAULI_STRING = 0;
-    
+    REPRESENTATION_FORMAT_PAULI_STRING = 1;
+
     // Sparse matrix in COO format (JSON).
     // See docs/specs/matrix-formats.md for schema.
-    REPRESENTATION_MATRIX_SPARSE = 1;
-    
+    REPRESENTATION_FORMAT_MATRIX_SPARSE = 2;
+
     // Dense matrix as row-major array of complex numbers (JSON).
-    REPRESENTATION_MATRIX_DENSE = 2;
+    REPRESENTATION_FORMAT_MATRIX_DENSE = 3;
   }
 
   // The format of the content field.
