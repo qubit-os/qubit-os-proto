@@ -145,6 +145,9 @@ message PulseShape {
   // For GATE_CUSTOM: JSON representation of the target unitary matrix.
   // Format: {"rows": N, "cols": N, "data": [[re, im], ...]}
   string custom_unitary_json = 21;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // PulseLibraryEntry represents a named pulse in a library.
@@ -152,25 +155,31 @@ message PulseLibraryEntry {
   // Human-readable name for this pulse.
   // Example: "x_gate_20ns_q0"
   string name = 1;
-  
+
   // Optional description.
   string description = 2;
-  
+
   // The pulse shape.
   PulseShape pulse = 3;
-  
+
   // Tags for organization.
   repeated string tags = 4;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // PulseLibrary is a collection of named pulses.
 message PulseLibrary {
   // Version of the library format.
   string version = 1;
-  
+
   // When this library was created/updated.
   quantum.common.v1.Timestamp updated_at = 2;
-  
+
   // The pulses in this library.
   repeated PulseLibraryEntry entries = 3;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }

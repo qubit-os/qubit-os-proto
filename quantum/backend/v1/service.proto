@@ -55,13 +55,19 @@ message ListBackendsRequest {
   // If true, include detailed info for each backend.
   // If false, return names only (faster).
   bool include_details = 1;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // ListBackendsResponse contains available backends.
 message ListBackendsResponse {
   // Backend names.
   repeated string backend_names = 1;
-  
+
   // Detailed info if requested.
   repeated HardwareInfo backends = 2;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }

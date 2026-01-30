@@ -57,24 +57,30 @@ message ExecutePulseRequest {
   // Allow execution even if calibration fingerprint doesn't match.
   // If true, executes with WARNING; if false, rejects with FAILED_PRECONDITION.
   bool allow_calibration_mismatch = 10;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // ExecutePulseResponse contains the execution result.
 message ExecutePulseResponse {
   // Trace context echoed back.
   quantum.common.v1.TraceContext trace = 1;
-  
+
   // Whether execution succeeded.
   bool success = 2;
-  
+
   // Error details if success = false.
   quantum.common.v1.Error error = 3;
-  
+
   // The measurement result.
   MeasurementResult result = 4;
-  
+
   // Non-fatal warnings.
   repeated string warnings = 5;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // MeasurementResult contains the outcome of pulse execution.
@@ -148,6 +154,9 @@ message MeasurementResult {
   
   // Execution timing statistics.
   ExecutionTiming timing = 12;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // StateVector represents the quantum state (simulator only).
@@ -155,45 +164,54 @@ message StateVector {
   // Complex amplitudes as [re_0, im_0, re_1, im_1, ...].
   // Length = 2 * 2^num_qubits
   repeated double amplitudes = 1;
-  
+
   // Number of qubits.
   int32 num_qubits = 2;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // NoiseParameters describes the noise model used.
 message NoiseParameters {
   // T1 relaxation time in microseconds.
   double t1_us = 1;
-  
+
   // T2 dephasing time in microseconds.
   double t2_us = 2;
-  
+
   // Readout error probability (average of 0->1 and 1->0 errors).
   double readout_error = 3;
-  
+
   // Single-qubit gate error (from randomized benchmarking).
   double single_gate_error = 4;
-  
+
   // Two-qubit gate error.
   double two_gate_error = 5;
-  
+
   // Thermal equilibrium excited state population.
   double thermal_population = 6;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // ExecutionTiming provides timing breakdown.
 message ExecutionTiming {
   // Time spent in queue (hardware backends).
   int64 queue_time_ms = 1;
-  
+
   // Time for actual pulse execution.
   int64 execution_time_ms = 2;
-  
+
   // Time for readout and processing.
   int64 readout_time_ms = 3;
-  
+
   // Total wall-clock time.
   int64 total_time_ms = 4;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // ExecutePulseBatchRequest executes multiple pulses.
@@ -208,6 +226,9 @@ message ExecutePulseBatchRequest {
   // If true, subsequent pulses are skipped after a failure.
   // If false, all pulses are attempted regardless of earlier failures.
   bool stop_on_first_error = 3;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // ExecutePulseBatchResponse contains batch results.
@@ -229,4 +250,7 @@ message ExecutePulseBatchResponse {
   
   // Total batch execution time in milliseconds.
   int64 total_time_ms = 6;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }

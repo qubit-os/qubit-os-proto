@@ -70,4 +70,7 @@ message HamiltonianSpec {
   
   // If validation failed, this contains the error message.
   string validation_error = 8;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }

@@ -99,6 +99,9 @@ message GRAPERequest {
   // Required calibration fingerprint.
   // If specified, optimization uses this calibration's noise parameters.
   string calibration_fingerprint = 16;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // GRAPEOptions contains advanced optimizer configuration.
@@ -187,6 +190,9 @@ message GRAPEOptions {
   // Number of transmon levels to include (for leakage modeling).
   // Default: 3
   int32 transmon_levels = 15;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // GRAPEResponse contains the result of a GRAPE optimization.
@@ -238,12 +244,18 @@ message GRAPEResponse {
   // Non-fatal warnings generated during optimization.
   // Example: "Gradient clipping applied 15 times"
   repeated string warnings = 12;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // CancelGRAPERequest requests cancellation of a running optimization.
 message CancelGRAPERequest {
   // Trace ID of the optimization to cancel.
   string trace_id = 1;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // CancelGRAPEResponse confirms cancellation.
@@ -251,10 +263,13 @@ message CancelGRAPEResponse {
   // Whether cancellation was successful.
   // May be false if optimization already completed.
   bool cancelled = 1;
-  
+
   // Partial result if available.
   // Contains best pulse found before cancellation.
   GRAPEResponse partial_result = 2;
+
+  // Reserved for future use.
+  reserved 50 to 100;
 }
 
 // GRAPE service definition.
